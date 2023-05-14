@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-Notary Service Feedback Form</title>
+</head>
+<body>
+  <h2>E-Notary Service Feedback Form</h2>
+  <form action="submit_feedback.php" method="post">
+    <h3>Contact Information</h3>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone"><br>
+
+    <h3>Demographic Information</h3>
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age"><br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Other</option>
+    </select><br>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location"><br>
+
+    <h3>Service Details</h3>
+    <label for="service_type">Service Type:</label>
+    <input type="text" id="service_type" name="service_type" required><br>
+
+    <label for="service_date">Service Date:</label>
+    <input type="date" id="service_date" name="service_date"><br>
+
+    <label for="transaction_id">Transaction ID:</label>
+    <input type="text" id="transaction_id" name="transaction_id"><br>
+
+    <h3>Rating and Overall Satisfaction</h3>
+    <label for="satisfaction">Overall Satisfaction:</label>
+    <select id="satisfaction" name="satisfaction">
+      <option value="5">5 - Very Satisfied</option>
+      <option value="4">4 - Satisfied</option>
+      <option value="3">3 - Neutral</option>
+      <option value="2">2 - Dissatisfied</option>
+      <option value="1">1 - Very Dissatisfied</option>
+    </select><br>
+
+    <label for="service_rating">Service Rating:</label>
+    <input type="number" id="service_rating" name="service_rating" min="1" max="5"><br>
+
+    <h3>Feedback Questions</h3>
+    <label for="open_question">Open-ended Question:</label><br>
+    <textarea id="open_question" name="open_question" rows="4" cols="50"></textarea><br>
+
+    <label for="likert_scale">Likert Scale Question:</label><br>
+    <input type="radio" id="likert_scale" name="likert_scale" value="1"> 1
+    <input type="radio" id="likert_scale" name="likert_scale" value="2"> 2
+    <input type="radio" id="likert_scale" name="likert_scale" value="3"> 3
+    <input type="radio" id="likert_scale" name="likert_scale" value="4"> 4
+    <input type="radio" id="likert_scale" name="likert_scale" value="5
