@@ -1,11 +1,17 @@
 import flask
-from flask import Flask, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user, login_required
+from flask import Flask, request, jsonify, render_template, redirect, send_file, url_for
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 import json
+from werkzeug.utils import secure_filename
+import io
+import base64
+
+
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
@@ -28,6 +34,53 @@ class User(UserMixin, db.Model):
     @password.setter
     def password(self, plaintext):
         self._password = pbkdf2_sha256.hash(plaintext)
+
+# Notary Form table that collects data from current user
+class Notary_Form(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    firstname = Column(String, nullable=False)
+    lastname = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    phone = Column(Integer, nullable=False)
+    address = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, nullable=False)
+    zip = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    date = Column(Date, nullable=False)
+    time = Column(Time, nullable=False)
+    witnesses = Column(String, nullable=False)
+    additional = Column(String, nullable=False)
+    notary_id = Column(Integer, ForeignKey('notary.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+# Data of Notary
+class Notary(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    phone = Column(Integer, nullable=False)
+    address = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, nullable=False)
+    zip = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    notary_forms = relationship('Notary_Form', backref='notary', lazy=True)
+
+# Document, only accepting images at this time
+class Document(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(150))
+    description = Column(String(150))
+    filename = Column(String(150))  # New field to store the original filename
+    file_data = Column(db.LargeBinary)
+    file_extension = Column(String(5))  # Store the file extension
+    hash_value = Column(String(64), nullable=False)  # SHA256 hash of the file
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    notary_id = Column(Integer, ForeignKey('notary.id'), nullable=False)
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
