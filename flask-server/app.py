@@ -10,6 +10,9 @@ import json
 from werkzeug.utils import secure_filename
 import io
 import base64
+import hashlib
+from datetime import datetime
+import os
 
 
 app = Flask(__name__)
@@ -35,53 +38,6 @@ class User(UserMixin, db.Model):
     @password.setter
     def password(self, plaintext):
         self._password = pbkdf2_sha256.hash(plaintext)
-
-# Notary Form table that collects data from current user
-class Notary_Form(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    firstname = Column(String, nullable=False)
-    lastname = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    phone = Column(Integer, nullable=False)
-    address = Column(String, nullable=False)
-    city = Column(String, nullable=False)
-    state = Column(String, nullable=False)
-    zip = Column(String, nullable=False)
-    type = Column(String, nullable=False)
-    date = Column(Date, nullable=False)
-    time = Column(Time, nullable=False)
-    witnesses = Column(String, nullable=False)
-    additional = Column(String, nullable=False)
-    notary_id = Column(Integer, ForeignKey('notary.id'))
-    user_id = Column(Integer, ForeignKey('user.id'))
-
-# Data of Notary
-class Notary(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    phone = Column(Integer, nullable=False)
-    address = Column(String, nullable=False)
-    city = Column(String, nullable=False)
-    state = Column(String, nullable=False)
-    zip = Column(String, nullable=False)
-    type = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    notary_forms = relationship('Notary_Form', backref='notary', lazy=True)
-
-# Document, only accepting images at this time
-class Document(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(150))
-    description = Column(String(150))
-    filename = Column(String(150))  # New field to store the original filename
-    file_data = Column(db.LargeBinary)
-    file_extension = Column(String(5))  # Store the file extension
-    hash_value = Column(String(64), nullable=False)  # SHA256 hash of the file
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    notary_id = Column(Integer, ForeignKey('notary.id'), nullable=False)
-
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -132,7 +88,6 @@ class Notary_Form(db.Model):
     time = Column(Time, nullable=False)
     witnesses = Column(String, nullable=False)
     additional = Column(String, nullable=False)
-    notary_id = Column(Integer, ForeignKey('notary.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
 
 
@@ -187,6 +142,54 @@ def login():
         }
     )
 
+@app.route("/NotaryLogin", methods=["POST"])
+def notary_login():
+    login_data = flask.request.get_json()
+    required_fields = ["email", "password"]
+    for field in required_fields:
+        if field not in login_data:
+            flask.abort(400, description=f"{field} cannot be blank.")
+
+    user = Notary.query.filter_by(email=login_data["email"]).one()
+    if not user:
+        flask.abort(401, description=f"Incorrect email or password.")
+    is_correct_password = pbkdf2_sha256.verify(login_data["password"], user.password)
+    if not is_correct_password:
+        flask.abort(401, description=f"Incorrect email or password.")
+
+    login_user(Notary)
+    return flask.jsonify(
+        {
+            "full_name": user.full_name,
+            "email": user.email,
+        }
+    )
+
+@app.route("/NotarySignup", methods=["POST"])
+def notary_signup():
+    user_data = flask.request.get_json()
+    required_fields = ["full_name", "email", "password"]
+    for field in required_fields:
+        if field not in user_data:
+            flask.abort(400, description=f"{field} cannot be blank.")
+    
+    user = Notary()
+    user.full_name = user_data["full_name"]
+    user.email = user_data["email"]
+    user.password = user_data["password"]
+
+    db.session.add(Notary)
+    db.session.commit()
+
+    login_user(Notary)
+
+    return flask.jsonify(
+        {
+            "full_name": user.full_name,
+            "email": user.email,
+        }
+    )
+
 # User Dashboard
 @app.route('/dashboard')
 # @login_required
@@ -230,7 +233,6 @@ def form():
             time=time,
             witnesses=request.json.get('witnesses'),
             additional=request.json.get('additional'),
-            notary_id=1,  # Assign everyone to notary_id 1
             user_id=current_user.id,
         )
         db.session.add(notary_form)

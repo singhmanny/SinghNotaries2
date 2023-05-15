@@ -107,6 +107,9 @@ class Home extends React.Component {
 							<Link to="/about">About</Link> &nbsp; &nbsp;
 							<Link to="/contact">Contact</Link> &nbsp; &nbsp;
 							<Link to="/login">Log In</Link>
+							<br />
+
+							<Link to="/NotarySignup">Are you a notary? Sign Up</Link>
 							<ul className="copyright">
 								<li>&copy; Singh Notaries. All rights reserved.</li>
 							</ul>
