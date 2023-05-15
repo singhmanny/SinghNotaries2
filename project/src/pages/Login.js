@@ -108,6 +108,7 @@ import { useNavigate } from "react-router-dom";
     }
 }*/}
 const Login = ({onLoginSuccess}) => {
+    const Navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -121,14 +122,14 @@ const Login = ({onLoginSuccess}) => {
                 password,
             });
     
-            // Upon successful login, redirect the user to the Home page.
-            
-            
+            // Upon successful login, redirect the user to the Dashboard page.
+            Navigate('/dashboard');
             
         } catch (error) {
             setError(error.response.data.description);
         }
     };
+    
     
     useEffect(() => {
         window.scrollTo(0, 0);
