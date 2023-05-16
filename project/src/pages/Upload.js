@@ -1,39 +1,34 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const UploadForm = () => {
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState(null);
-  const [message, setMessage] = useState('');
-
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
+function Upload() {
+    const Navigate = useNavigate();
+    const [title, setTitle] = useState('');
+    const [file, setFile] = useState(null);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!title || !file) {
-      setMessage('Please provide a title and select a file.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('file', file);
+  
 
     try {
-      await axios.post('/upload', formData);
-      setMessage('File uploaded successfully');
-      setTitle('');
-      setFile(null);
+        const response = await axios.post("/upload", {
+            title: title,
+            file: file,
+        });
+
+        if (response.data.message === 'Notary document submitted successfully') {
+            // Handle successful submission
+            // For example, navigate to a different page or show a success message
+            Navigate('/dashboard');
+        }
     } catch (error) {
-      setMessage('Error uploading file');
+        // Handle error
+        setError(error.response.data.message || "Failed to submit the form. Please check your inputs.");
     }
-  };
+};
 
   return (
     <section id="main" className="container medium">
@@ -51,7 +46,7 @@ const UploadForm = () => {
             type="text"
             id="title"
             value={title}
-            onChange={handleTitleChange}
+            onChange={(event) => setTitle(event.target.value)}
           />
         </div>
         <div>
@@ -59,7 +54,7 @@ const UploadForm = () => {
           <input
             type="file"
             id="file"
-            onChange={handleFileChange}
+            onChange={(event) => setFile(event.target.files[0])}
           />
         </div>
         <button type="submit">Upload</button>
@@ -70,4 +65,4 @@ const UploadForm = () => {
   );
 };
 
-export default UploadForm;
+export default Upload;

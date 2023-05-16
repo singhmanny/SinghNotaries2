@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request, jsonify, render_template, redirect, send_file, url_for
+from flask import Flask, request, jsonify, render_template, redirect, send_file, current_app, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
 from flask_sqlalchemy import SQLAlchemy
@@ -39,9 +39,9 @@ class User(UserMixin, db.Model):
     def password(self, plaintext):
         self._password = pbkdf2_sha256.hash(plaintext)
 
-@login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    with current_app.app_context():
+        return db.session.get(int(user_id))
 
 class Notary(db.Model, UserMixin):
 
@@ -325,7 +325,7 @@ def upload():
                 file_data=file_data,
                 file_extension=extension,
                 hash_value=hashlib.sha256(file_data).hexdigest(),
-                user_id=current_user.id
+                #user_id=current_user.id
             )
             db.session.add(document)
             db.session.commit()
