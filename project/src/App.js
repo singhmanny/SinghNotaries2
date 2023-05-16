@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Schedule from "./pages/Schedule";
 import Form from "./pages/Form";
+import Upload from "./pages/Upload";
 import Payment from "./pages/Payment"
 import Login from "./pages/Login"
 
@@ -29,6 +30,7 @@ function App() {
 					<Route path='/dashboard' element={<Dashboard />} />
 					<Route path='/schedule' element={<Schedule />} />
 					<Route path='/form' element={<Form />} />
+					<Route path='/upload' element={<Upload />} />
 				</Routes>
 			</BrowserRouter>
 		</div>

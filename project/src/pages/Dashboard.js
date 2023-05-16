@@ -17,8 +17,7 @@ const Dashboard = () => {
                         </>
                     ) : (
                         <div>
-                            <p>Please log in to access your dashboard.</p>
-                            <button onClick={loginWithRedirect}>Log In</button>
+                            <p>Hello.</p>
                         </div>
                     )}
                     <div className="box">

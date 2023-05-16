@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request, jsonify, render_template, redirect, send_file, url_for
+from flask import Flask, request, jsonify, render_template, redirect, send_file, current_app, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
 from flask_sqlalchemy import SQLAlchemy
@@ -39,9 +39,9 @@ class User(UserMixin, db.Model):
     def password(self, plaintext):
         self._password = pbkdf2_sha256.hash(plaintext)
 
-@login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    with current_app.app_context():
+        return db.session.get(int(user_id))
 
 class Notary(db.Model, UserMixin):
 
@@ -208,23 +208,13 @@ def dashboard():
 from datetime import datetime
 
 @app.route("/form", methods=["POST"])
-@login_required
+#@login_required
 def form():
     user_data = flask.request.get_json()
     required_fields = ["firstname", "lastname", "email", "phone", "address", "city", "state", "zip", "type", "date", "time"]
     for field in required_fields:
         if field not in user_data:
             flask.abort(400, description=f"{field} cannot be blank.")
-
-    # Parse date and time
-    date_string = user_data["date"]
-    time_string = user_data["time"]
-    try:
-        # Convert strings to date and time objects
-        date = datetime.strptime(date_string, "%Y-%m-%d").date()  # Adjust the format string as needed
-        time = datetime.strptime(time_string, "%H:%M:%S").time()  # Adjust the format string as needed
-    except ValueError:
-        return jsonify(message='Invalid date or time format'), 400
 
     form = Notary_Form()
     form.firstname = user_data["firstname"]
@@ -236,11 +226,11 @@ def form():
     form.state = user_data["state"]
     form.zip = user_data["zip"]
     form.type = user_data["type"]
-    form.date = date  # Use date object
-    form.time = time  # Use time object
+    #form.date = date  # Use date object
+    #form.time = time  # Use time object
     form.witnesses = user_data["witnesses"]
     form.additional = user_data["additional"]
-    form.user_id = current_user.id
+    #form.user_id = current_user.id
 
     db.session.add(form)
     db.session.commit()
@@ -256,8 +246,8 @@ def form():
             "state": form.state,
             "zip": form.zip,
             "type": form.type,
-            "date": form.date,
-            "time": form.time,
+            #"date": form.date,
+            #"time": form.time,
             "witnesses": form.witnesses,
             "additional": form.additional,
         }
@@ -335,7 +325,7 @@ def upload():
                 file_data=file_data,
                 file_extension=extension,
                 hash_value=hashlib.sha256(file_data).hexdigest(),
-                user_id=current_user.id
+                #user_id=current_user.id
             )
             db.session.add(document)
             db.session.commit()
