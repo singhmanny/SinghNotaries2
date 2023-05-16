@@ -205,41 +205,100 @@ def dashboard():
 
     return render_template('dashboard.html', documents=documents, notary_forms=notary_forms)
 
-@app.route('/form', methods=['POST'])
-# @login_required  
+from datetime import datetime
+
+@app.route("/form", methods=["POST"])
+#@login_required
 def form():
-    if request.method == 'POST':
-        # Parse date and time
-        date_string = request.json.get('date')
-        time_string = request.json.get('time')
-        try:
-            date = datetime.strptime(date_string, "%Y-%m-%d").date()  # Adjust the format string as needed
-            time = datetime.strptime(time_string, "%H:%M:%S").time()  # Adjust the format string as needed
-        except ValueError:
-            return jsonify(message='Invalid date or time format'), 400
+    user_data = flask.request.get_json()
+    required_fields = ["firstname", "lastname", "email", "phone", "address", "city", "state", "zip", "type", "date", "time"]
+    for field in required_fields:
+        if field not in user_data:
+            flask.abort(400, description=f"{field} cannot be blank.")
 
-        # Process the form and create a new Notary_Form
-        notary_form = Notary_Form(
-            firstname=request.json.get('firstname'),
-            lastname=request.json.get('lastname'),
-            email=request.json.get('email'),
-            phone=request.json.get('phone'),
-            address=request.json.get('address'),
-            city=request.json.get('city'),
-            state=request.json.get('state'),
-            zip=request.json.get('zip'),
-            type=request.json.get('type'),
-            date=date,
-            time=time,
-            witnesses=request.json.get('witnesses'),
-            additional=request.json.get('additional'),
-            user_id=current_user.id,
-        )
-        db.session.add(notary_form)
-        db.session.commit()
-        return jsonify(message='Notary form submitted successfully')
+    # Parse date and time
+    date_string = user_data["date"]
+    time_string = user_data["time"]
+    try:
+        # Convert strings to date and time objects
+        date = datetime.strptime(date_string, "%Y-%m-%d").date()  # Adjust the format string as needed
+        time = datetime.strptime(time_string, "%H:%M:%S").time()  # Adjust the format string as needed
+    except ValueError:
+        return jsonify(message='Invalid date or time format'), 400
 
-    return jsonify(message='Invalid request'), 400
+    form = Notary_Form()
+    form.firstname = user_data["firstname"]
+    form.lastname = user_data["lastname"]
+    form.email = user_data["email"]
+    form.phone = user_data["phone"]
+    form.address = user_data["address"]
+    form.city = user_data["city"]
+    form.state = user_data["state"]
+    form.zip = user_data["zip"]
+    form.type = user_data["type"]
+    form.date = date  # Use date object
+    form.time = time  # Use time object
+    form.witnesses = user_data["witnesses"]
+    form.additional = user_data["additional"]
+    form.user_id = current_user.id
+
+    db.session.add(form)
+    db.session.commit()
+
+    return flask.jsonify(
+        {
+            "firstname": form.firstname,
+            "lastname": form.lastname,
+            "email": form.email,
+            "phone": form.phone,
+            "address": form.address,
+            "city": form.city,
+            "state": form.state,
+            "zip": form.zip,
+            "type": form.type,
+            "date": form.date,
+            "time": form.time,
+            "witnesses": form.witnesses,
+            "additional": form.additional,
+        }
+    )
+
+
+# @app.route('/form', methods=['POST'])
+# # @login_required  
+# def form():
+#     if request.method == 'POST':
+#         # Parse date and time
+#         date_string = request.json.get('date')
+#         time_string = request.json.get('time')
+#         try:
+#             date = datetime.strptime(date_string, "%Y-%m-%d").date()  # Adjust the format string as needed
+#             time = datetime.strptime(time_string, "%H:%M:%S").time()  # Adjust the format string as needed
+#         except ValueError:
+#             return jsonify(message='Invalid date or time format'), 400
+
+#         # Process the form and create a new Notary_Form
+#         notary_form = Notary_Form(
+#             firstname=request.json.get('firstname'),
+#             lastname=request.json.get('lastname'),
+#             email=request.json.get('email'),
+#             phone=request.json.get('phone'),
+#             address=request.json.get('address'),
+#             city=request.json.get('city'),
+#             state=request.json.get('state'),
+#             zip=request.json.get('zip'),
+#             type=request.json.get('type'),
+#             date=date,
+#             time=time,
+#             witnesses=request.json.get('witnesses'),
+#             additional=request.json.get('additional'),
+#             user_id=current_user.id,
+#         )
+#         db.session.add(notary_form)
+#         db.session.commit()
+#         return jsonify(message='Notary form submitted successfully')
+
+#     return jsonify(message='Invalid request'), 400
 
 
 
