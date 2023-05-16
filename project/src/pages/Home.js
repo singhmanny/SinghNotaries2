@@ -76,13 +76,24 @@ class Home extends React.Component {
 								</div>
 								<div className="features-row">
 									<section>
-										<span className="icon solid major far fa-address-card accent3"></span>
-										<h3>Quality and Certification</h3>
-										<p> </p>
+										<span className="icon solid major fa fa-credit-card accent3"></span>
+										<h3> Easy Payments</h3>
+										<p><p align="center">
+											<p>Say goodbye to complicated payment processes and hello to hassle-free transactions. We accept all major credit cards, making it easy for you to pay in a way that works best for you</p>
+						<ul class="actions" align="center" style={{ textAlign: "center" }}>
+							{/* <li><a href="https://goo.gl/maps/oek8ac8CtLbQjp1X6" class="button primary large">Map & Directions</a></li>
+							<li><a href="tel:+1-347-799-0300" class="button primary large">Call Now</a></li> */}
+							<li align="center" style={{ textAlign: "center" }}><a href="https://square.link/u/0OGasDR5
+" class="button primary large" align="center">eNotary Payment</a></li>
+<li align="center" style={{ textAlign: "center" }}><a href="https://square.link/u/mtuJDMfI 
+" class="button primary large" align="center">Others</a></li>
+						</ul>
+						</p> </p>
 										</section>
 									<section>
 										<span className="icon solid major fa-phone accent4"></span>
-										<h3>Will be putting iframe here for the map location</h3>
+										<h3>Come See us or give us a call!</h3>
+										<p>You can come see us in person using the Google Maps link below, or give us a call with just a click of our Call Now button. Either way, we're here to help and make it as convenient as possible for you to get in touch with us.</p>
 										<p><p align="center">
 						<ul class="actions">
 							<li><a href="https://goo.gl/maps/oek8ac8CtLbQjp1X6" class="button primary large">Map & Directions</a></li>
