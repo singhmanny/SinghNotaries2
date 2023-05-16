@@ -192,7 +192,7 @@ def notary_signup():
 
 # User Dashboard
 @app.route('/dashboard')
-# @login_required
+@login_required
 def dashboard():
     # Fetch user's documents and notary forms
     documents = Document.query.filter_by(user_id=current_user.id).all()
@@ -208,7 +208,7 @@ def dashboard():
 from datetime import datetime
 
 @app.route("/form", methods=["POST"])
-#@login_required
+@login_required
 def form():
     user_data = flask.request.get_json()
     required_fields = ["firstname", "lastname", "email", "phone", "address", "city", "state", "zip", "type", "date", "time"]
