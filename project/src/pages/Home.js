@@ -21,7 +21,7 @@ class Home extends React.Component {
 							<nav id="nav">
 								<ul>
 									<li><Link to="/home">Home</Link></li>
-									<li><Link to="/FAQ">E-Notary</Link></li>
+									<li><Link to="/Dashboard">E-Notary</Link></li>
 									<li><Link to="/about">About</Link></li>
 									<li><Link to="/contact">Contact</Link></li>
 									<li><Link to="/signup" className="button">Sign up</Link></li>
@@ -33,7 +33,7 @@ class Home extends React.Component {
 							<h2>Singh Notaries</h2>
 							<p>NNA CERTIFIED MOBILE NOTARIES AND SIGNING AGENTS</p>
 							<ul className="actions special">
-								<li><Link to="/booknow" className="button primary">BOOK NOW</Link></li>
+								<li><Link to="/schedule" className="button primary">BOOK NOW</Link></li>
 								<li><Link to="/contact" className="button">CONTACT US</Link></li>
 							</ul>
 						</section>
@@ -47,7 +47,7 @@ class Home extends React.Component {
 					professional, punctual, and precise! Singh Notaries are available to notarize trust, legal agreements, adoption paperwork, parental permission to travel, health care directives, powers of attorney, motor vehicle transfer documents and
 					more…! Your notary is only one call away from you!</p>
 								</header>
-								{<span className="image featured"><img src="project/images/notary1-544-1.jpg" alt="" /></span>}
+								{<span className="image featured"><img src="../images/notary1-544-1.jpg" alt="" /></span>}
 							</section>
 							<section className="box special features">
 								<div className="features-row">

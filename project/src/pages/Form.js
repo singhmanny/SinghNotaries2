@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Form() {
-    const navigate = useNavigate();
+    const Navigate = useNavigate();
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -21,9 +21,9 @@ function Form() {
         event.preventDefault();
 
         // Get current date and time
-        let now = new Date();
-        let date = now.toISOString().split('T')[0];  // Get date in "YYYY-MM-DD" format
-        let time = now.toTimeString().split(' ')[0];  // Get time in "HH:MM:SS" format
+        //let now = new Date();
+        //let date = now.toISOString().split('T')[0];  // Get date in "YYYY-MM-DD" format
+        //let time = now.toTimeString().split(' ')[0];  // Get time in "HH:MM:SS" format
 
         try {
             const response = await axios.post("/form", {
@@ -36,8 +36,8 @@ function Form() {
                 state: state,
                 zip: zip,
                 type: type,
-                date: date,  // Use current date
-                time: time,  // Use current time
+                //date: date,  // Use current date
+                //time: time,  // Use current time
                 witnesses: witnesses,
                 additional: additional,
             });
@@ -45,7 +45,7 @@ function Form() {
             if (response.data.message === 'Notary form submitted successfully') {
                 // Handle successful submission
                 // For example, navigate to a different page or show a success message
-                navigate('/dashboard');
+                Navigate('/dashboard');
             }
         } catch (error) {
             // Handle error
@@ -179,7 +179,7 @@ function Form() {
             name="witnesses"
             id="witnesses"
             value={witnesses}
-            placeholder="Witnesses"
+            placeholder="# of Witnesses"
             onChange={(event) => setWitnesses(event.target.value)}
         />
     </div>
