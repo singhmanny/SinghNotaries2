@@ -7,6 +7,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginButton from "./pages/LoginButton";
 import FAQ from "./pages/FAQ";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import Schedule from "./pages/Schedule";
+import Form from "./pages/Form";
 import Payment from "./pages/Payment"
 import Login from "./pages/Login"
 
@@ -23,6 +26,9 @@ function App() {
 					<Route path='/signup' element={<Signup />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/pay' element={<Payment />} />
+					<Route path='/dashboard' element={<Dashboard />} />
+					<Route path='/schedule' element={<Schedule />} />
+					<Route path='/form' element={<Form />} />
 				</Routes>
 			</BrowserRouter>
 		</div>
